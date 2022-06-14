@@ -7,12 +7,13 @@ This file implements the UCF_ResNet50_delta_model (ResNet50 model with delta lay
 
 import tensorflow as tf
 from tensorflow import keras
-from keras import layers, Model
+#from keras import layers, Model
+from tensorflow.keras import layers, Model
 from custom_layers import delta_activation
 
 show_metric=False
 
-def block1(x, filters, next_filter, kernel_size=3, stride=1, conv_shortcut=True, name=None, sp_rate=1e-5, thr_init=1e-1): # next_filter to calculate n_outputs 
+def block1(x, filters, next_filter, kernel_size=3, stride=1, conv_shortcut=True, name=None, sp_rate=1e-5, thr_init=1e-1, thr_trainable=True): # next_filter to calculate n_outputs 
 
     n_spikes = 0
     n_neurons=0
@@ -52,18 +53,18 @@ def block1(x, filters, next_filter, kernel_size=3, stride=1, conv_shortcut=True,
     return x,  n_spikes, n_neurons
 
 
-def stack(x, filters, blocks, next_filter, stride1=2, name=None, sp_rate=1e-5, thr_init=1e-1):
+def stack(x, filters, blocks, next_filter, stride1=2, name=None, sp_rate=1e-5, thr_init=1e-1, thr_trainable=True):
     n_spikes = 0
     n_neurons=0
 
-    x,s,n = block1(x, filters, next_filter=filters, stride=stride1, name=name + '_block1', sp_rate=sp_rate, thr_init=thr_init)
+    x,s,n = block1(x, filters, next_filter=filters, stride=stride1, name=name + '_block1', sp_rate=sp_rate, thr_init=thr_init, thr_trainable=thr_trainable)
     n_spikes += s
     n_neurons +=n
 
     for i in range(2, blocks + 1):
         n_filter=filters
         if(i==blocks): n_filter=next_filter
-        x,s,n = block1(x, filters, next_filter=n_filter, conv_shortcut=False, name=name + '_block' + str(i), sp_rate=sp_rate, thr_init=thr_init)
+        x,s,n = block1(x, filters, next_filter=n_filter, conv_shortcut=False, name=name + '_block' + str(i), sp_rate=sp_rate, thr_init=thr_init, thr_trainable=thr_trainable)
         n_spikes += s
         n_neurons +=n
     return x, n_spikes, n_neurons
@@ -88,10 +89,10 @@ def UCF_ResNet50_delta(input_shape=(224,224), classes=101, sp_rate=1e-5, thr_ini
     x = layers.TimeDistributed(layers.MaxPooling2D(3, strides=2, name='pool1_pool'), name='pool1_pool')(x)
 
     #ResNet blocks
-    x, s_conv2, n_conv2 = stack(x,  64, 3, next_filter=128*5, stride1=1, name='conv2', sp_rate=sp_rate, thr_init=thr_init[2])
-    x, s_conv3, n_conv3 = stack(x, 128, 4, next_filter=256*5, name='conv3', sp_rate=sp_rate, thr_init=thr_init[3])
-    x, s_conv4, n_conv4 = stack(x, 256, 6, next_filter=512*5, name='conv4', sp_rate=sp_rate, thr_init=thr_init[4])
-    x, s_conv5, n_conv5 = stack(x, 512, 3, next_filter=1024, name='conv5', sp_rate=sp_rate, thr_init=thr_init[5])
+    x, s_conv2, n_conv2 = stack(x,  64, 3, next_filter=128*5, stride1=1, name='conv2', sp_rate=sp_rate, thr_init=thr_init[2], thr_trainable=thr_trainable)
+    x, s_conv3, n_conv3 = stack(x, 128, 4, next_filter=256*5, name='conv3', sp_rate=sp_rate, thr_init=thr_init[3], thr_trainable=thr_trainable)
+    x, s_conv4, n_conv4 = stack(x, 256, 6, next_filter=512*5, name='conv4', sp_rate=sp_rate, thr_init=thr_init[4], thr_trainable=thr_trainable)
+    x, s_conv5, n_conv5 = stack(x, 512, 3, next_filter=1024, name='conv5', sp_rate=sp_rate, thr_init=thr_init[5], thr_trainable=thr_trainable)
 
     #top
     x = layers.TimeDistributed(layers.AveragePooling2D((7,7), name="avg_pool"), name="avg_pool")(x)

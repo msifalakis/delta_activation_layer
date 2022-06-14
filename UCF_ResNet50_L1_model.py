@@ -7,7 +7,8 @@ This file implements the UCF_ResNet50_delta_model (ResNet50 model with delta lay
 
 import tensorflow as tf
 from tensorflow import keras
-from keras import layers, Model
+#from keras import layers, Model
+from tensorflow.keras import layers, Model
 from custom_layers import L1_regulizer
 
 

@@ -9,14 +9,17 @@ import numpy as np
 import cv2
 import os.path
 import random
-from keras.preprocessing.image import ImageDataGenerator
-from keras.utils import to_categorical
+#from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+#from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 from video_generator.sliding_amir import SlidingFrameGenerator
 from tensorflow.keras.applications.resnet50 import preprocess_input
 
 def get_classes(class_limit=None):
     classes = []
     with open(os.path.join('dataset_preparation/', 'UCF_classInd.txt'), 'r') as fin:
+    #with open(os.path.join('/mnt/space/datasets/UCF101_dataset/', 'UCF_classInd.txt'), 'r') as fin:
         reader = [read.strip() for read in fin.readlines()]
         for p in reader:
             line = p.split(' ')
@@ -44,6 +47,7 @@ def train_generator(image_shape=(224, 224), batch_size=32, class_limit=None, nb_
 
     classes = get_classes(class_limit)
     glob_pattern_train = os.path.join('dataset_preparation/', 'UCF_train','{classname}','*.avi')
+    #glob_pattern_train = os.path.join('/mnt/space/datasets/UCF101_dataset/', 'UCF_train','{classname}','*.avi')
 
     generator = SlidingFrameGenerator(
         sequence_stride = sequence_stride,
@@ -67,7 +71,8 @@ def validation_generator(image_shape=(224, 224), batch_size=32, class_limit=None
     test_datagen = ImageDataGenerator()
 
     classes = get_classes(class_limit)
-    glob_pattern_test = os.path.join('dataset_preparation/', 'UCF_test','{classname}','*.avi')
+    glob_pattern_test = os.path.join('dataset_preparation/', 'UCF_train','{classname}','*.avi')
+    #glob_pattern_test = os.path.join('/mnt/space/datasets/UCF101_dataset/', 'UCF_test','{classname}','*.avi')
 
     generator = SlidingFrameGenerator(
         sequence_stride = sequence_stride,

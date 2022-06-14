@@ -15,8 +15,10 @@ import cv2 as cv
 from math import floor
 from video_generator.generator_amir import VideoFrameGenerator
 
-from keras.utils import Sequence
-from keras.preprocessing.image import \
+#from keras.utils import Sequence
+from tensorflow.keras.utils import Sequence
+#from keras.preprocessing.image import \
+from tensorflow.keras.preprocessing.image import \
     ImageDataGenerator, img_to_array
 from psutil import virtual_memory
 import tensorflow.keras.applications.resnet50 as resnet_utils

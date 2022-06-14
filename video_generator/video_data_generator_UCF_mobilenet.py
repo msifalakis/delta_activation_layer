@@ -9,8 +9,10 @@ import numpy as np
 import cv2
 import os.path
 import random
-from keras.preprocessing.image import ImageDataGenerator
-from keras.utils import to_categorical
+#from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+#from keras.utils import to_categorical
+from tensorflow.keras.utils import to_categorical
 from video_generator.sliding_amir import SlidingFrameGenerator
 from tensorflow.keras.applications.mobilenet import preprocess_input
 

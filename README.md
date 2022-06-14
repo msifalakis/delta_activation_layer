@@ -1,17 +1,20 @@
 # Delta Activation Layer
 
-Codebase for Delta Activation Layer  work (based on  Keras library with Tensorflow2).
+Codebase for the Delta Activation Layer project (based on Keras library with Tensorflow2).
+
+NOTE: This code is only experimental and therefore not comes with no liability (particularly in what relates to its quality or efficiency)
 
 
-## Setup
+## Dataset setup
 
-Default dataset path for the scripts is ```dataset_preparation/```  folder, This path is set in 
+Default location of the dataset searched by the scripts in ```video_generator/``` is the ```dataset_preparation/```  folder.
+This path is hardcoded in 
 
-- ```video_generator/video_data_generator_UCF_resnet.py``` and 
+- ```video_generator/video_data_generator_UCF_resnet.py```, and 
   
 - ```video_generator/video_data_generator_UCF_mobilenet.py```
 
-and should be  be adjusted to your local dataset setup.
+It may therefore be altered to match your local dataset setup.
 
 We use the whole dataset with *split 1*.
 
@@ -34,21 +37,42 @@ The format of the generated dataset folder shoulds look like this:
 
 ## General
 
-- ```video_generator/``` contains the video data generator and preprocessing scripts
-- ```out/``` contains the trained models
-- ```custom_layers.py``` Definitions of Delta_activation layers and L1 regularization layer
+- Dir ```video_generator/``` contains the video data generator and preprocessing scripts
+- Dir ```out/``` contains the trained models
+- File ```custom_layers.py``` contains the definitions of Delta_activation layers and L1 regularization layer
+- Files ```*_model.py``` contain the various network models (that embed the DAL)
+- Files ```*_fine_tune.py``` are top-level scripts to train a model starting from pre-trained weights
+- Files ```*_inference.py``` are top-level scripts to run inference on trained models
+- Files ```*_ORG_*.py``` involve baseline models in their original form from the literature (no DAL involved)
 
-If your hardware setup has (like ours) multiple GPUs, you need to set the environment variable CUDA_VISIBLE_DEVICES to select  GPU for the experiments. This can be done either at the shell when calling the scripts, e.g 
+
+
+## Running with GPUs
+
+If your hardware setup has (like ours) multiple GPUs, you may set the environment variable CUDA_VISIBLE_DEVICES to select  GPU for the experiments. This can be done either at the shell when calling the scripts, e.g 
 ```
 	$ CUDA_VISIBLE_DEVICES=0 script.py
 ```
-... **or** by setting  the environment accordingly from inside the script with the command ```os.environ["CUDA_VISIBLE_DEVICES"]="0"```. Our scripts contain this command, which will override any explicit setting at the shell. So either update the scripts with your selection or disable the command to allow choosing the GPU at the shell. 
+**or** by setting the environment programmatically inside the top-level scripts with the command ```os.environ["CUDA_VISIBLE_DEVICES"]="0"```.
 
-In tensoflow2 the following LoCs in our scripts allow partial utilisation of GPU memory (which allows us to execute multiple scripts in one GPU). If this feature is not supported in your platform you need to disable (comment out #) these lines before executing the scripts.
-```c++
+Our scripts use the latter approach, which will thus override the value set in the former approach (setting the environment interactively at the shell prompt). So either update the scripts to reflect you GPU config, or disable the command in the scripts to make effective the GPU selection with the former approach. 
+
+In tensoflow2 the following LoCs in our scripts make partial utilisation of GPU memory (which allows us to execute multiple scripts in one GPU). If this feature is not supported in your platform you need to disable (comment out #) these lines before executing the scripts.
+```
   	physical_devices = tf.config.list_physical_devices('GPU')
  	tf.config.experimental.set_memory_growth(physical_devices[0], True)
 ```
+
+## Library dependencies
+
+This codebase has been tested with:
+
+- python 3.8.x (3.8.6 to be more specific)
+- tensorflow 2.3
+- keras frontend 2.4.0 (the one included in Tensoflow 2.3)
+- opencv-python 4.6.0.66
+- psutil 5.9.1
+
 
 
 ## Running the experiments

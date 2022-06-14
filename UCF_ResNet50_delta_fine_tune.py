@@ -36,6 +36,7 @@ frame_stride = 1 #skip frames in a sequence
 seq_stride = np.ceil(seq_size/2) #stride between current and next sequence 
 sp_rate=1e-6#1e-4
 thr_init=[3,3,3,4,4,4,3] #[3,1,1,1,1e-1,1e-1,1e-3]
+thr_trainable = True
 opt = keras.optimizers.SGD(lr=1e-3, momentum=0.9, decay=5e-4)    
 
 #data-set preparation
@@ -60,7 +61,7 @@ validation_generator = validation_generator (
 # model_ref.load_weights(weight_load_addr)
 
 #trasnfer weights to delta model and freeze (non-delta layers)
-model = UCF_ResNet50_delta(input_shape = image_shape, classes = n_classes, sp_rate=sp_rate, thr_init=thr_init)
+model = UCF_ResNet50_delta(input_shape = image_shape, classes = n_classes, sp_rate=sp_rate, thr_init=thr_init, thr_trainable=thr_trainable )
 model.load_weights(save_dir+'/weights.08-0.60.hdf5') #<-- already trained 8 epochs
 # for i in range(len(model_ref.layers)):
 #     if len(model_ref.layers[i].trainable_weights)!=0: #transfer learning all layers
