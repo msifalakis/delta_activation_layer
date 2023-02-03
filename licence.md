@@ -1,4 +1,4 @@
-Delta Activation Layer © 2022 by Stichting Imec The Netherlands (Amirreza Yousefzadeh & Manolis Sifalakis) is licensed under CC BY-NC 4.0.
+Delta Activation Layer © 2022 by Stichting Imec The Netherlands (Amirreza Yousefzadeh & Manolis Sifalakis) is licensed under CC BY-NC 4.0 for academic and personal use. For commercial use please contact Stichting Imec The Netherlands.
 
 
 # Attribution-NonCommercial 4.0 International
